@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 Forbidden - The Forbidden Sector</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 403 Forbidden Page -->
+    <div id="forbidden-page" class="forbidden-container">
+        <div class="error-content">
+            <h1 class="error-code">403</h1>
+            <h2 class="error-message">FORBIDDEN</h2>
+            <p class="error-description">
+                You don't have permission to access this resource.<br>
+                <span class="sector-label">The Forbidden Sector - Scene 65</span>
+            </p>
+            <div class="warning">
+                <p>⚠️ DO NOT GO HERE ⚠️</p>
+            </div>
+            <div class="hint" id="hint">
+                <small>Perhaps some secrets lie hidden in the shadows...</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Website -->
+    <div id="hidden-site" class="hidden-container">
+        <div class="matrix-bg"></div>
+        <div class="hidden-content">
+            <header class="secret-header">
+                <h1 class="glitch" data-text="SECTOR-65 UNLOCKED">SECTOR-65 UNLOCKED</h1>
+                <p class="access-granted">Access Granted - Welcome to the Forbidden Archive</p>
+            </header>
+
+            <nav class="secret-nav">
+                <button class="nav-btn active" data-section="classified">Classified Files</button>
+                <button class="nav-btn" data-section="archives">Digital Archives</button>
+                <button class="nav-btn" data-section="terminal">Terminal</button>
+                <button class="nav-btn" data-section="easter-eggs">Easter Eggs</button>
+            </nav>
+
+            <main class="secret-main">
+                <!-- Classified Files Section -->
+                <section id="classified" class="secret-section active">
+                    <h2>📁 Classified Documents</h2>
+                    <div class="file-grid">
+                        <div class="file-item" onclick="openFile('project-x')">
+                            <div class="file-icon">🗂️</div>
+                            <span>PROJECT_X.enc</span>
+                        </div>
+                        <div class="file-item" onclick="openFile('alien-contact')">
+                            <div class="file-icon">👽</div>
+                            <span>ALIEN_CONTACT.log</span>
+                        </div>
+                        <div class="file-item" onclick="openFile('time-travel')">
+                            <div class="file-icon">⏰</div>
+                            <span>TIME_TRAVEL.dat</span>
+                        </div>
+                        <div class="file-item" onclick="openFile('quantum')">
+                            <div class="file-icon">⚛️</div>
+                            <span>QUANTUM_TECH.bin</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Digital Archives Section -->
+                <section id="archives" class="secret-section">
+                    <h2>💾 Digital Archives</h2>
+                    <div class="archive-list">
+                        <div class="archive-item">
+                            <h3>Message from the Future</h3>
+                            <p>Timestamp: 2087-03-15 14:22:33</p>
+                            <div class="message">
+                                "If you're reading this, the timeline has been preserved. 
+                                The forbidden sector holds the key to humanity's survival. 
+                                Guard it well. -Future You"
+                            </div>
+                        </div>
+                        <div class="archive-item">
+                            <h3>Ancient Algorithm</h3>
+                            <p>Source: Unknown Civilization</p>
+                            <div class="code-block">
+                                while (universe.exists()) {<br>
+                                &nbsp;&nbsp;if (consciousness.awakens()) {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;reality.shift();<br>
+                                &nbsp;&nbsp;}<br>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Terminal Section -->
+                <section id="terminal" class="secret-section">
+                    <h2>💻 Quantum Terminal</h2>
+                    <div class="terminal-window">
+                        <div class="terminal-header">
+                            <span class="terminal-title">QUANTUM_OS v3.14159</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line">
+                                <span class="prompt">sector-65@forbidden:~$</span>
+                                <span class="command">whoami</span>
+                            </div>
+                            <div class="terminal-output">curious_explorer</div>
+                            <div class="terminal-line">
+                                <span class="prompt">sector-65@forbidden:~$</span>
+                                <span class="command">cat secrets.txt</span>
+                            </div>
+                            <div class="terminal-output">
+                                The answer to everything: 42<br>
+                                Pi = 3.14159265359...<br>
+                                Schrödinger's cat is both alive and dead<br>
+                                You are here: X marks the spot
+                            </div>
+                            <div class="terminal-line">
+                                <span class="prompt">sector-65@forbidden:~$</span>
+                                <span class="command cursor-blink">_</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Easter Eggs Section -->
+                <section id="easter-eggs" class="secret-section">
+                    <h2>🥚 Easter Egg Collection</h2>
+                    <div class="easter-grid">
+                        <div class="easter-egg" onclick="triggerEgg('konami')">
+                            <div class="egg-icon">🎮</div>
+                            <h3>Konami Code</h3>
+                            <p>↑↑↓↓←→←→BA</p>
+                        </div>
+                        <div class="easter-egg" onclick="triggerEgg('matrix')">
+                            <div class="egg-icon">💊</div>
+                            <h3>Red or Blue?</h3>
+                            <p>Choose your reality</p>
+                        </div>
+                        <div class="easter-egg" onclick="triggerEgg('coffee')">
+                            <div class="egg-icon">☕</div>
+                            <h3>Coffee Break</h3>
+                            <p>418 I'm a teapot</p>
+                        </div>
+                        <div class="easter-egg" onclick="triggerEgg('space')">
+                            <div class="egg-icon">🚀</div>
+                            <h3>Space Invader</h3>
+                            <p>Retro gaming mode</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="secret-footer">
+                <p>🔒 Sector-65 Classified Archive | Clearance Level: ULTRA | Your IP: 127.0.0.1</p>
+                <button id="self-destruct" onclick="selfDestruct()">🔥 SELF DESTRUCT</button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- File Modal -->
+    <div id="file-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
