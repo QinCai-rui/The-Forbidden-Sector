@@ -49,11 +49,14 @@
                             Take the name of this tool, add 'hub', and you'll find the secret door."
                         </div>
                         <p class="hint">💡 <strong>Hint:</strong> This tool + hub = a famous code hosting platform</p>
+                        <form class="answer-form" onsubmit="return checkAnswer(event, 'username', 'github', 'usernameSolution')">
+                            <input type="text" placeholder="Enter the tool + hub" class="answer-input" required>
+                            <button type="submit" class="reveal-btn">Submit</button>
+                        </form>
                         <div class="solution" id="usernameSolution" style="display: none;">
-                            <strong>✅ Solution:</strong> The username is <code>github</code>
+                            <strong>✅ Correct!</strong> The username is <code>github</code>
                             <br><small>(Git + hub = GitHub, the platform where the expedition code lives)</small>
                         </div>
-                        <button onclick="revealSolution('usernameSolution')" class="reveal-btn">Reveal Solution</button>
                     </div>
 
                     <div class="challenge-box">
@@ -73,11 +76,14 @@
                             Finally subtract the silly hills. This number holds the key!"
                         </div>
                         <p class="hint">💡 <strong>Math:</strong> (65 - 1 + 33) × 17 - 99 = ?</p>
+                        <form class="answer-form" onsubmit="return checkAnswer(event, 'password', '1550', 'passwordSolution')">
+                            <input type="text" placeholder="Enter the password" class="answer-input" required>
+                            <button type="submit" class="reveal-btn">Submit</button>
+                        </form>
                         <div class="solution" id="passwordSolution" style="display: none;">
-                            <strong>✅ Solution:</strong> The password is <code>1550</code>
+                            <strong>✅ Correct!</strong> The password is <code>1550</code>
                             <br><small>Calculation: (65-1+33)×17-99 = 97×17-99 = 1649-99 = 1550</small>
                         </div>
-                        <button onclick="revealSolution('passwordSolution')" class="reveal-btn">Reveal Solution</button>
                     </div>
 
                     <div class="challenge-box">
@@ -98,11 +104,14 @@
                             What am I that connects all these digital realms?"
                         </div>
                         <p class="hint">💡 Think about what enables all these web scenes to exist...</p>
+                        <form class="answer-form" onsubmit="return checkAnswer(event, 'riddle', 'internet', 'riddleSolution')">
+                            <input type="text" placeholder="What connects all scenes?" class="answer-input" required>
+                            <button type="submit" class="reveal-btn">Submit</button>
+                        </form>
                         <div class="solution" id="riddleSolution" style="display: none;">
-                            <strong>✅ Answer:</strong> The Internet/Web! 🌐
+                            <strong>✅ Correct!</strong> The Internet/Web! 🌐
                             <br><small>The network that connects all expedition scenes across the digital realm.</small>
                         </div>
-                        <button onclick="revealSolution('riddleSolution')" class="reveal-btn">Reveal Solution</button>
                     </div>
 
                     <div class="challenge-box">
@@ -119,11 +128,14 @@
                             "When the crabs rave, they spell out the expedition's motto.<br>
                             Combine all fragments in dancing order for the final key."
                         </div>
+                        <form class="answer-form" onsubmit="return checkAnswer(event, 'crab', 'summerofmaking', 'crabSolution')">
+                            <input type="text" placeholder="Enter the final key" class="answer-input" required>
+                            <button type="submit" class="reveal-btn">Submit</button>
+                        </form>
                         <div class="solution" id="crabSolution" style="display: none;">
-                            <strong>✅ Solution:</strong> The final key is <code>SUMMEROFMAKING</code>
+                            <strong>✅ Correct!</strong> The final key is <code>SUMMEROFMAKING</code>
                             <br><small>The crabs' dance spells out the flagship summer event: "Summer of Making"</small>
                         </div>
-                        <button onclick="revealSolution('crabSolution')" class="reveal-btn">Reveal Solution</button>
                     </div>
 
                     <div class="challenge-box danger">
@@ -136,6 +148,11 @@
                             VERIFICATION: [Challenges 3 & 4 prove worthiness]<br>
                             <span class="highlight">AUTHORISATION LEVEL: SECTOR65</span>
                         </div>
+                        <form class="answer-form" onsubmit="return checkFinal(event)">
+                            <input type="text" placeholder="Username" class="answer-input" required>
+                            <input type="text" placeholder="Password" class="answer-input" required>
+                            <button type="submit" class="reveal-btn danger-btn">INITIATE FINAL PROTOCOL</button>
+                        </form>
                         <div class="solution" id="finalSolution" style="display: none;">
                             <strong>🎉 EXPEDITION CREDENTIALS UNLOCKED!</strong>
                             <div class="credentials-display">
@@ -143,7 +160,6 @@
                                 <p><strong>Password:</strong> <code>1550</code></p>
                             </div>
                         </div>
-                        <button onclick="revealSolution('finalSolution')" class="reveal-btn danger-btn">INITIATE FINAL PROTOCOL</button>
                     </div>
                 </div>
 
@@ -178,24 +194,67 @@
     <script>
         let challengesCompleted = 0;
 
-        function revealSolution(solutionId) {
-            const solution = document.getElementById(solutionId);
-            solution.style.display = 'block';
-            challengesCompleted++;
-            updateProgress();
-            
-            if (challengesCompleted >= 5) {
+        function checkAnswer(event, type, answer, solutionId) {
+            event.preventDefault();
+            const input = event.target.querySelector('input');
+            if (!input) return false;
+            let userValue = input.value.trim().toLowerCase();
+            let correct = false;
+            if (type === 'username') {
+                correct = (userValue === 'github');
+            } else if (type === 'password') {
+                correct = (userValue === '1550');
+            } else if (type === 'riddle') {
+                correct = (userValue === 'internet' || userValue === 'web' || userValue === 'the internet' || userValue === 'the web');
+            } else if (type === 'crab') {
+                correct = (userValue === 'summerofmaking');
+            }
+            if (correct) {
+                event.target.style.display = 'none';
+                document.getElementById(solutionId).style.display = 'block';
+                challengesCompleted++;
+                updateProgress();
+                return false;
+            } else {
+                input.value = '';
+                input.placeholder = 'Try again!';
+                input.classList.add('wrong');
+                setTimeout(() => input.classList.remove('wrong'), 800);
+                return false;
+            }
+        }
+
+        function checkFinal(event) {
+            event.preventDefault();
+            const inputs = event.target.querySelectorAll('input');
+            if (inputs.length < 2) return false;
+            const user = inputs[0].value.trim().toLowerCase();
+            const pass = inputs[1].value.trim();
+            if (user === 'github' && pass === '1550') {
+                event.target.style.display = 'none';
+                document.getElementById('finalSolution').style.display = 'block';
+                challengesCompleted++;
+                updateProgress();
                 setTimeout(() => {
                     document.getElementById('credentialsSummary').style.display = 'block';
                     document.getElementById('credentialsSummary').scrollIntoView({ behavior: 'smooth' });
                 }, 1000);
+                return false;
+            } else {
+                inputs[0].value = '';
+                inputs[1].value = '';
+                inputs[0].placeholder = 'Try again!';
+                inputs[1].placeholder = 'Try again!';
+                inputs[0].classList.add('wrong');
+                inputs[1].classList.add('wrong');
+                setTimeout(() => { inputs[0].classList.remove('wrong'); inputs[1].classList.remove('wrong'); }, 800);
+                return false;
             }
         }
 
         function updateProgress() {
             const progressFill = document.getElementById('progressFill');
             const challengeCount = document.getElementById('challengeCount');
-            
             const percentage = (challengesCompleted / 5) * 100;
             progressFill.style.width = percentage + '%';
             challengeCount.textContent = challengesCompleted;
@@ -204,20 +263,17 @@
         // Add some interactive effects
         document.addEventListener('DOMContentLoaded', function() {
             const challengeBoxes = document.querySelectorAll('.challenge-box');
-            
             challengeBoxes.forEach((box, index) => {
                 setTimeout(() => {
                     box.style.opacity = '0';
                     box.style.transform = 'translateY(20px)';
                     box.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    
                     setTimeout(() => {
                         box.style.opacity = '1';
                         box.style.transform = 'translateY(0)';
                     }, 100);
                 }, index * 200);
             });
-
             // Add glitch effect to the transmission text
             const glitchText = document.getElementById('glitchText');
             if (glitchText) {
