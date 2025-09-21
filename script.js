@@ -184,7 +184,7 @@ function revealEasterEgg() {
             const result = await response.json();
             if (result.authenticated) {
                 document.body.removeChild(modal);
-                revealEasterEgg();
+                showEasterEggContent();
             } else {
                 if (result.error) {
                     errorDiv.textContent = result.error;
