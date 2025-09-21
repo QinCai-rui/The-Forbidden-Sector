@@ -1,0 +1,503 @@
+body {
+    background: #0a0a0a;
+    color: #e74c3c;
+    font-family: 'Share Tech Mono', monospace, 'Courier New', Courier;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 40px 70px, #fff, transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: sparkle 3s linear infinite;
+    z-index: -1;
+}
+
+@keyframes sparkle {
+    from { transform: translateY(0); }
+    to { transform: translateY(-200px); }
+}
+
+.container {
+    max-width: 1000px;
+    width: 90%;
+    margin: 2rem auto;
+}
+
+.terminal-window {
+    background: rgba(10, 10, 10, 0.95);
+    border: 2px solid #e74c3c;
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(231, 76, 60, 0.5);
+    overflow: hidden;
+}
+
+.terminal-header {
+    background: #1a1a1a;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.terminal-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.control {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.control.close { background: #ff5f56; }
+.control.minimize { background: #ffbd2e; }
+.control.maximize { background: #27ca3f; }
+
+.terminal-title {
+    color: #fff;
+    font-weight: bold;
+}
+
+.terminal-body {
+    padding: 1.5rem;
+    min-height: 60vh;
+}
+
+.ascii-art {
+    color: #e74c3c;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 0.6rem;
+    line-height: 1;
+    text-shadow: 0 0 10px #e74c3c;
+}
+
+.ascii-art.glitch {
+    animation: textGlitch 0.2s;
+}
+
+@keyframes textGlitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+.loading-sequence {
+    margin: 2rem 0;
+}
+
+.loading-line {
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.5s ease;
+}
+
+.prompt {
+    color: #2ecc40;
+    font-weight: bold;
+}
+
+.loading-dots {
+    color: #f39c12;
+    animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+    0%, 20% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.warning-message {
+    background: rgba(231, 76, 60, 0.1);
+    border: 2px solid #e74c3c;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease;
+}
+
+.warning-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #fff;
+    text-shadow: 0 0 10px #e74c3c;
+}
+
+.auth-required {
+    background: #1a0000;
+    border: 1px solid #e74c3c;
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.easter-egg-content {
+    background: rgba(46, 204, 64, 0.1);
+    border: 2px solid #2ecc40;
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 2rem 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease;
+}
+
+.success-header {
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #2ecc40;
+    text-shadow: 0 0 10px #2ecc40;
+}
+
+.grand-survey-content h2 {
+    color: #2ecc40;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.grand-survey-content h3 {
+    color: #f39c12;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.expedition-details {
+    color: #ecf0f1;
+}
+
+.data-block {
+    background: #000;
+    border: 1px solid #2ecc40;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.data-block code {
+    color: #2ecc40;
+    text-shadow: 0 0 5px #2ecc40;
+}
+
+.expedition-links {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.expedition-link {
+    display: inline-block;
+    background: #2ecc40;
+    color: #000;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    margin: 1rem;
+    transition: all 0.3s ease;
+}
+
+.expedition-link:hover {
+    background: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 204, 64, 0.4);
+}
+
+.hidden-message {
+    background: rgba(52, 73, 94, 0.8);
+    border-left: 4px solid #3498db;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: #bdc3c7;
+}
+
+.command-prompt {
+    margin-top: 2rem;
+    color: #2ecc40;
+}
+
+.cursor {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.help-link {
+    text-align: center;
+    margin-top: 1rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease;
+}
+
+.help-link a {
+    color: #f39c12;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid #f39c12;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.help-link a:hover {
+    background: #f39c12;
+    color: #000;
+}
+
+h1, h2, h3 {
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px #e74c3c, 0 0 2px #fff;
+}
+
+.forbidden {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #e74c3c;
+    text-transform: uppercase;
+    border-bottom: 2px solid #e74c3c;
+    padding-bottom: 0.5rem;
+}
+
+.scene {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 2rem;
+}
+
+.auth-box {
+    background: rgba(20,20,20,0.95);
+    border: 2px solid #e74c3c;
+    border-radius: 8px;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 0 24px #e74c3c44;
+    margin-bottom: 2rem;
+}
+
+input[type="text"], input[type="password"] {
+    background: #222;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    width: 100%;
+}
+
+button {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.7rem 2rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #c0392b;
+}
+
+.easter-egg {
+    margin-top: 2rem;
+    color: #2ecc40;
+    font-size: 1.2rem;
+    text-shadow: 0 0 8px #2ecc40;
+    animation: blink 1.2s infinite alternate;
+}
+
+@keyframes blink {
+    from { opacity: 1; }
+    to { opacity: 0.5; }
+}
+
+.challenge {
+    background: #111;
+    border: 2px dashed #e67e22;
+    color: #e67e22;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 2rem auto;
+    max-width: 500px;
+    font-size: 1.1rem;
+}
+
+.challenge-box {
+    background: rgba(20,20,20,0.95);
+    border: 2px solid #e67e22;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 0 15px rgba(230, 126, 34, 0.3);
+}
+
+.challenge-box.danger {
+    border-color: #e74c3c;
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+}
+
+.cipher-text {
+    background: #000;
+    border: 1px solid #444;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-family: 'Share Tech Mono', monospace;
+    border-radius: 4px;
+    line-height: 1.6;
+}
+
+.cipher-text.glitch {
+    position: relative;
+    color: #0f0;
+    text-shadow: 0 0 10px #0f0;
+}
+
+.cipher-text.glitch-active {
+    animation: glitch 0.2s;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+.cipher-text.terminal-style {
+    background: #001100;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+}
+
+.riddle-text {
+    background: #2c1810;
+    border-left: 4px solid #e67e22;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: #f39c12;
+}
+
+.credentials-display {
+    background: #001a00;
+    border: 2px solid #00ff00;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    color: #00ff00;
+    font-family: 'Share Tech Mono', monospace;
+    text-align: center;
+}
+
+.reveal-btn {
+    background: #f39c12;
+    color: #000;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.reveal-btn:hover {
+    background: #e67e22;
+    transform: translateY(-2px);
+}
+
+.reveal-btn.danger-btn {
+    background: #e74c3c;
+    color: #fff;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+}
+
+.solution {
+    background: #1a3d1a;
+    border: 1px solid #2ecc40;
+    color: #2ecc40;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    border-left: 4px solid #2ecc40;
+}
+
+.progress-bar {
+    background: #333;
+    height: 10px;
+    border-radius: 5px;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, #e67e22, #f39c12);
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    text-align: center;
+    color: #e67e22;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.hint {
+    color: #95a5a6;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+}
+
+@media (max-width: 600px) {
+    .auth-box, .challenge {
+        padding: 1rem;
+    }
+    .forbidden {
+        font-size: 1.5rem;
+    }
+}
