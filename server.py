@@ -13,6 +13,32 @@ INDEX_PAGE = "index.html"
 EASTER_EGG = "<div class='easter-egg'>Congratulations, explorer! You have discovered the hidden sector. <a href='https://github.com/hackclub/som-grand-survey-expedition' target='_blank'>Join the expedition</a>!</div>"
 
 class ForbiddenSectorHandler(BaseHTTPRequestHandler):
+    def do_POST(self):
+        if self.path == "/authenticate":
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length).decode('utf-8')
+            import json
+            try:
+                data = json.loads(body)
+                username = data.get('username', '')
+                password = data.get('password', '')
+            except Exception:
+                self.send_response(400)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                self.wfile.write(b'{"authenticated": false, "error": "Invalid JSON"}')
+                return
+            if username == USERNAME and password == PASSWORD:
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                self.wfile.write(b'{"authenticated": true}')
+            else:
+                self.send_response(401)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                self.wfile.write(b'{"authenticated": false, "error": "Invalid credentials"}')
+            return
     def do_GET(self):
         if self.path == "/info.html":
             self.serve_file(INFO_PAGE)

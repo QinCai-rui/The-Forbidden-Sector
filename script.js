@@ -179,20 +179,35 @@ function createAuthDialog() {
     // Focus on username field
     setTimeout(() => document.getElementById('username').focus(), 100);
     
-    // Handle form submission
-    document.getElementById('authForm').addEventListener('submit', function(e) {
+    // Handle form submission (server-side auth)
+    document.getElementById('authForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        
-        // Check credentials (same as server)
-        if (username === 'github' && password === '1550') {
-            // Success!
-            document.body.removeChild(modal);
-            revealEasterEgg();
-        } else {
-            // Wrong credentials - redirect to info page
-            window.location.href = '/info.html';
+        const errorDiv = document.getElementById('authError');
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+        try {
+            const response = await fetch('/authenticate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const result = await response.json();
+            if (result.authenticated) {
+                document.body.removeChild(modal);
+                revealEasterEgg();
+            } else {
+                if (result.error) {
+                    errorDiv.textContent = result.error;
+                    errorDiv.style.display = 'block';
+                } else {
+                    window.location.href = '/info.html';
+                }
+            }
+        } catch (err) {
+            errorDiv.textContent = 'Server error. Please try again.';
+            errorDiv.style.display = 'block';
         }
     });
     
