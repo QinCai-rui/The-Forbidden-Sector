@@ -14,10 +14,10 @@ EASTER_EGG = "<div class='easter-egg'>Congratulations, explorer! You have discov
 
 class ForbiddenSectorHandler(BaseHTTPRequestHandler):
     def do_POST(self):
+        import json
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length).decode('utf-8')
         if self.path == "/authenticate":
-            content_length = int(self.headers.get('Content-Length', 0))
-            body = self.rfile.read(content_length).decode('utf-8')
-            import json
             try:
                 data = json.loads(body)
                 username = data.get('username', '')
@@ -38,6 +38,37 @@ class ForbiddenSectorHandler(BaseHTTPRequestHandler):
                 self.send_header('Content-type', 'application/json')
                 self.end_headers()
                 self.wfile.write(b'{"authenticated": false, "error": "Invalid credentials"}')
+            return
+        elif self.path == "/check_answer":
+            try:
+                data = json.loads(body)
+                challenge_type = data.get('type', '')
+                user_value = data.get('value', '').strip().lower()
+            except Exception:
+                self.send_response(400)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                self.wfile.write(b'{"correct": false, "error": "Invalid JSON"}')
+                return
+            correct = False
+            if challenge_type == 'username':
+                correct = (user_value == 'github')
+            elif challenge_type == 'password':
+                correct = (user_value == '1550')
+            elif challenge_type == 'riddle':
+                correct = user_value in ['internet', 'web', 'the internet', 'the web']
+            elif challenge_type == 'crab':
+                correct = (user_value == 'summerofmaking')
+            if correct:
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                self.wfile.write(b'{"correct": true}')
+            else:
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                self.wfile.write(b'{"correct": false}')
             return
     def do_GET(self):
         if self.path == "/info.html":

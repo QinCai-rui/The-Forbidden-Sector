@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     setTimeout(typeTitle, 1000);
     
-    // easter egg reveal (this would be triggered by the server when auth succeeds)
+    // easter egg reveal (this would be triggered by the server when auth succeeds) at least i really hope so. cannot test bc on mobile
     window.revealEasterEgg = function() {
         const easterEggContent = document.getElementById('easterEggContent');
         const warningMessage = document.querySelector('.warning-message');
@@ -112,18 +112,6 @@ function addAuthenticationPrompt() {
 
 function revealEasterEgg() {
     const easterEggContent = document.getElementById('easterEggContent');
-    const warningMessage = document.querySelector('.warning-message');
-    
-    if (easterEggContent && warningMessage) {
-        warningMessage.style.display = 'none';
-        easterEggContent.style.display = 'block';
-        easterEggContent.style.opacity = '1';
-        easterEggContent.style.transform = 'translateY(0)';
-    }
-}
-
-function createAuthDialog() {
-    // Create a modal dialog for authentication
     const modal = document.createElement('div');
     modal.style.cssText = `
         position: fixed;
