@@ -157,7 +157,7 @@ async def check_answer(answer_data: AnswerRequest):
         elif challenge_type == 'riddle':
             correct = user_value in ['internet', 'web', 'the internet', 'the web']
         elif challenge_type == 'crab':
-            correct = (user_value == 'summerofmaking')
+            correct = user_value in ['summerofmaking', 'som', 'summer of making']
         elif challenge_type == 'final':
             # Handle final challenge with username and password
             username = answer_data.username.strip().lower()
