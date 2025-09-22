@@ -191,7 +191,7 @@ EASTER_EGG_CONTENT = """
 <div class="hidden-container">
     <div class="hidden-content">
         <header class="secret-header">
-            <h1 class="glitch" data-text="SECTOR-65 UNLOCKED">SECTOR-65 UNLOCKED</h1>
+            <h1 class="glitch" data-text="SCENE 65 UNLOCKED">SCENE 65 UNLOCKED</h1>
             <p class="access-granted">Access Granted - Welcome to the Forbidden Archive</p>
         </header>
 
@@ -225,9 +225,10 @@ EASTER_EGG_CONTENT = """
             <p>Join the ongoing expedition! Create something impossible, map new territories of learning, and add your discoveries to the Grand Survey archive.</p>
             
             <div class="expedition-links">
-                <a href="https://github.com/hackclub/som-grand-survey-expedition" target="_blank" class="expedition-link">
-                    🗺️ Access the Full Expedition Archive
+                <a href="https://isle.a.hackclub.dev/scenes/27" target="_blank" class="expedition-link">
+                    🗺️ Access the Discouraged Sector (Scene 27)
                 </a>
+                <a href="
                 <div class="hidden-message">
                     <strong>Classified Note:</strong> The true treasure was the friends and projects made along the way. 
                     Keep exploring, keep creating, and remember: in the world of making, there are no forbidden sectors—only undiscovered possibilities.
@@ -236,7 +237,7 @@ EASTER_EGG_CONTENT = """
         </div>
 
         <footer class="secret-footer">
-            <p>🔒 Sector-65 Classified Archive | Clearance Level: ULTRA</p>
+            <p>🔒 Scene 65 Classified Archive | Clearance Level: ULTRA</p>
         </footer>
     </div>
 </div>
