@@ -207,7 +207,7 @@ function updateHintPeriodically() {
             hint.innerHTML = `<small>${hints[currentHint]}</small>`;
             currentHint = (currentHint + 1) % hints.length;
         }
-    }, 3000);
+    }, 4000);
 }
 
 // Play unlock sound effect (simple beep using Web Audio API)
