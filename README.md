@@ -47,7 +47,7 @@ docker run -p 9082:9082 forbidden-sector
 ### Method 4: Using Docker Compose (Recommended)
 
 ```bash
-docker compose up
+docker compose up -d 
 ```
 
 This will build and run the container with volume mounting for development.
