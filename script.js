@@ -84,7 +84,7 @@ async function loadDynamicContent(endpoint, sessionIdParam = null) {
     try {
         let url = endpoint;
         if (sessionIdParam) {
-            url += `?session_id=${sessionIdParam}`;
+            url += `?session_id=${encodeURIComponent(sessionIdParam)}`;
         }
         
         const response = await fetch(url);
