@@ -346,10 +346,10 @@ async def serve_js():
 async def authenticate(auth_data: AuthRequest):
     """Handle authentication requests."""
     try:
-        username = auth_data.username.strip()
+        username = auth_data.username.strip().lower()
         password = auth_data.password.strip()
         
-        if username == USERNAME and password == PASSWORD:
+        if username == USERNAME.lower() and password == PASSWORD:
             # Create new session
             session_id = create_session_id()
             authenticated_sessions[session_id] = True
@@ -410,7 +410,7 @@ async def authenticate_get(request: Request):
             media_type="text/html"
         )
     
-    if username == USERNAME and password == PASSWORD:
+    if username.lower() == USERNAME.lower() and password == PASSWORD:
         return JSONResponse(content={"authenticated": True}, status_code=200)
     else:
         return Response(
