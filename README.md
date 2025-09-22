@@ -76,12 +76,12 @@ Any changes to these files will automatically restart the server.
 - `GET /style.css` - CSS stylesheet
 - `GET /script.js` - JavaScript file
 
-## Authentication
+## Redirect command (YAY YOU FOUND IT!!)
 
-Default credentials: (YAY YOU FOUND THEM!!!)
+The command that redirects users to the info page is:
+`help`
 
-- Username: `github`
-- Password: `1550`
+Want the username and password? It's here somewhere... hmm...
 
 ## Docker Environment
 
