@@ -5,7 +5,7 @@
 const HELP_COMMAND = 'help';
 let userInput = '';
 let sequenceTimeout;
-let sessionId = '';
+let challengeSessionId = '';  // For challenge tracking only
 
 // DOM elements
 const forbiddenPage = document.getElementById('forbidden-page');
@@ -25,7 +25,8 @@ async function createSession() {
     try {
         const response = await fetch('/create_session', { method: 'POST' });
         const data = await response.json();
-        sessionId = data.session_id;
+        challengeSessionId = data.session_id;
+        console.log('Challenge session created:', challengeSessionId);
     } catch (error) {
         console.error('Failed to create session:', error);
     }
@@ -84,20 +85,38 @@ async function loadDynamicContent(endpoint, sessionIdParam = null) {
     try {
         let url = endpoint;
         if (sessionIdParam) {
+            console.log('Adding session_id to URL:', sessionIdParam);
             url += `?session_id=${encodeURIComponent(sessionIdParam)}`;
+        } else {
+            console.warn('No session_id provided for', endpoint);
         }
         
+        console.log('Loading content from:', url);
+        
         const response = await fetch(url);
+        console.log('Response status:', response.status, response.statusText);
         
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Server error response:', errorText);
+            
             if (response.status === 401) {
                 console.error('Authentication required for this content');
+                alert('Authentication required. Please log in again.');
                 return;
             }
-            throw new Error(`HTTP ${response.status}`);
+            if (response.status === 400) {
+                console.error('Bad request - likely missing or invalid session ID');
+                console.error('URL that failed:', url);
+                console.error('Session ID param:', sessionIdParam);
+                alert(`Authentication error (400): ${errorText}. Please try logging in again.`);
+                return;
+            }
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
+        console.log('Content loaded successfully');
         
         // Replace body content with new content
         document.body.innerHTML = data.html;
@@ -116,6 +135,7 @@ async function loadDynamicContent(endpoint, sessionIdParam = null) {
         }
     } catch (error) {
         console.error('Failed to load content:', error);
+        alert(`Failed to load content: ${error.message}`);
     }
 }
 
@@ -168,9 +188,9 @@ function initializeChallengeHandling() {
             let payload = {};
             if (type === 'final') {
                 if (inputs.length < 2) return;
-                payload = { type: 'final', username: inputs[0].value, password: inputs[1].value, session_id: sessionId };
+                payload = { type: 'final', username: inputs[0].value, password: inputs[1].value, session_id: challengeSessionId };
             } else {
-                payload = { type, value: inputs[0].value, session_id: sessionId };
+                payload = { type, value: inputs[0].value, session_id: challengeSessionId };
             }
             try {
                 const response = await fetch('/check_answer', {
@@ -290,14 +310,22 @@ function createAuthDialog() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
+            
+            if (!response.ok) {
+                throw new Error(`Authentication failed: ${response.status} ${response.statusText}`);
+            }
+            
             const result = await response.json();
+            console.log('Authentication response:', result);
             
             if (result.authenticated) {
-                // Store the authenticated session ID
-                sessionId = result.session_id;
+                console.log('Authentication successful, proceeding to unlock');
+                // Store credentials for accessing protected content
+                const credentials = { username, password };
                 document.body.removeChild(modal);
-                unlockHiddenSite();
+                unlockHiddenSiteWithCredentials(credentials);
             } else {
+                console.error('Authentication failed:', result);
                 errorDiv.textContent = result.error || 'Invalid credentials - access denied';
                 errorDiv.style.display = 'block';
                 // Clear the form
@@ -306,7 +334,8 @@ function createAuthDialog() {
                 document.getElementById('username').focus();
             }
         } catch (err) {
-            errorDiv.textContent = 'Connection failed - try again';
+            console.error('Authentication error:', err);
+            errorDiv.textContent = `Connection failed: ${err.message}`;
             errorDiv.style.display = 'block';
         }
     });
@@ -324,12 +353,75 @@ function createAuthDialog() {
     });
 }
 
-// Unlock the hidden site
-function unlockHiddenSite() {
-    loadDynamicContent('/content/authenticated', sessionId);
+// Unlock the hidden site with credentials
+function unlockHiddenSiteWithCredentials(credentials) {
+    console.log('unlockHiddenSiteWithCredentials called - using direct authentication');
+    
+    if (!credentials || !credentials.username || !credentials.password) {
+        console.error('Missing credentials');
+        alert('Authentication error: Missing credentials.');
+        return;
+    }
+    
+    console.log('Loading authenticated content with direct credentials');
+    loadAuthenticatedContent(credentials.username, credentials.password);
     
     // Play unlock sound effect
     playUnlockSound();
+}
+
+// Legacy function for backward compatibility (not used in new flow)
+function unlockHiddenSite() {
+    console.log('Legacy unlockHiddenSite called - should not be used');
+    alert('Authentication error: Please try logging in again.');
+}
+
+// Load authenticated content with direct credential verification
+async function loadAuthenticatedContent(username, password) {
+    try {
+        console.log('Posting credentials directly to authenticated endpoint');
+        
+        const response = await fetch('/content/authenticated', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        
+        console.log('Response status:', response.status, response.statusText);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Server error response:', errorText);
+            
+            if (response.status === 401) {
+                alert('Invalid credentials - access denied');
+                return;
+            }
+            if (response.status === 400) {
+                alert(`Authentication error (400): ${errorText}`);
+                return;
+            }
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Authenticated content loaded successfully');
+        
+        // Replace body content with new content
+        document.body.innerHTML = data.html;
+        
+        // Add CSS link to head if not present
+        if (!document.querySelector('link[href="style.css"]')) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'style.css';
+            document.head.appendChild(link);
+        }
+        
+    } catch (error) {
+        console.error('Failed to load authenticated content:', error);
+        alert(`Failed to load authenticated content: ${error.message}`);
+    }
 }
 
 // Update hint text periodically
