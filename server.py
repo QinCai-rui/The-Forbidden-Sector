@@ -10,13 +10,38 @@ import os
 from pathlib import Path
 import uuid
 from typing import Dict
+import redis
+import json
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="The Forbidden Sector", description="Scene 65: Classified Access")
 
 USERNAME = "github"
 PASSWORD = "1550"
 
-# Server-side session storage for authentication and challenge tracking
+# Redis connection for session storage to avoid memory leaks
+try:
+    redis_client = redis.Redis(
+        host=os.getenv("REDIS_HOST", "redis"),
+        port=int(os.getenv("REDIS_PORT", "6379")),
+        db=0,
+        decode_responses=True,
+        socket_connect_timeout=5,
+        socket_timeout=5,
+        retry_on_timeout=True
+    )
+    # Test connection
+    redis_client.ping()
+    logger.info("Connected to Redis successfully")
+except (redis.ConnectionError, redis.TimeoutError, Exception) as e:
+    logger.warning(f"Redis connection failed: {e}. Falling back to in-memory storage.")
+    redis_client = None
+
+# Fallback in-memory storage if Redis is not available
 authenticated_sessions: Dict[str, bool] = {}
 challenge_progress: Dict[str, int] = {}
 
@@ -228,7 +253,6 @@ EASTER_EGG_CONTENT = """
                 <a href="https://isle.a.hackclub.dev/scenes/27" target="_blank" class="expedition-link">
                     🗺️ Access the Discouraged Sector (Scene 27)
                 </a>
-                <a href="
                 <div class="hidden-message">
                     <strong>Classified Note:</strong> The true treasure was the friends and projects made along the way. 
                     Keep exploring, keep creating, and remember: in the world of making, there are no forbidden sectors—only undiscovered possibilities.
@@ -266,17 +290,68 @@ def create_session_id() -> str:
 
 def is_authenticated(session_id: str) -> bool:
     """Check if a session is authenticated."""
-    return session_id in authenticated_sessions and authenticated_sessions[session_id]
+    if redis_client:
+        try:
+            result = redis_client.get(f"auth:{session_id}")
+            return result == "true"
+        except Exception as e:
+            logger.error(f"Redis error checking authentication: {e}")
+            return False
+    else:
+        return session_id in authenticated_sessions and authenticated_sessions[session_id]
+
+def set_authenticated(session_id: str, authenticated: bool = True) -> None:
+    """Set authentication status for a session."""
+    if redis_client:
+        try:
+            if authenticated:
+                # Set with expiration (24 hours)
+                redis_client.setex(f"auth:{session_id}", 86400, "true")
+            else:
+                redis_client.delete(f"auth:{session_id}")
+        except Exception as e:
+            logger.error(f"Redis error setting authentication: {e}")
+    else:
+        authenticated_sessions[session_id] = authenticated
 
 def get_challenge_count(session_id: str) -> int:
     """Get challenge completion count for a session."""
-    return challenge_progress.get(session_id, 0)
+    if redis_client:
+        try:
+            result = redis_client.get(f"challenge:{session_id}")
+            return int(result) if result else 0
+        except Exception as e:
+            logger.error(f"Redis error getting challenge count: {e}")
+            return 0
+    else:
+        return challenge_progress.get(session_id, 0)
 
 def increment_challenge_count(session_id: str) -> int:
     """Increment challenge completion count for a session."""
-    current_count = challenge_progress.get(session_id, 0)
-    challenge_progress[session_id] = current_count + 1
-    return challenge_progress[session_id]
+    if redis_client:
+        try:
+            result = redis_client.incr(f"challenge:{session_id}")
+            # Set expiration on first increment
+            if result == 1:
+                redis_client.expire(f"challenge:{session_id}", 86400)
+            return result
+        except Exception as e:
+            logger.error(f"Redis error incrementing challenge count: {e}")
+            return 0
+    else:
+        current_count = challenge_progress.get(session_id, 0)
+        challenge_progress[session_id] = current_count + 1
+        return challenge_progress[session_id]
+
+def set_challenge_count(session_id: str, count: int) -> None:
+    """Set challenge completion count for a session."""
+    if redis_client:
+        try:
+            redis_client.setex(f"challenge:{session_id}", 86400, str(count))
+        except Exception as e:
+            logger.error(f"Redis error setting challenge count: {e}")
+    else:
+        challenge_progress[session_id] = count
 
 def serve_file_content(filename: str, content_type: str = "text/html") -> Response:
     """Serve file content with proper error handling."""
@@ -307,22 +382,49 @@ async def get_help_content():
 async def create_session():
     """Create a new session for challenge tracking."""
     session_id = create_session_id()
-    challenge_progress[session_id] = 0
+    set_challenge_count(session_id, 0)
     return JSONResponse(content={"session_id": session_id}, status_code=200)
+
+@app.post("/content/authenticated")
+async def get_authenticated_content_post(auth_data: AuthRequest):
+    """Serve easter egg content for authenticated users via direct credential verification."""
+    try:
+        username = auth_data.username.strip().lower()
+        password = auth_data.password.strip()
+        
+        if username == USERNAME.lower() and password == PASSWORD:
+            logger.info(f"Direct authentication successful for user: {username}")
+            return JSONResponse(content={"html": EASTER_EGG_CONTENT}, status_code=200)
+        else:
+            logger.warning(f"Invalid credentials attempt: {username}")
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+    except HTTPException:
+        raise  # Re-raise HTTP exceptions as-is
+    except Exception as e:
+        logger.error(f"Authentication error: {e}")
+        raise HTTPException(status_code=400, detail="Invalid request format")
 
 @app.get("/content/authenticated")
 async def get_authenticated_content(session_id: str = None):
-    """Serve easter egg content for authenticated users."""
+    """Serve easter egg content for authenticated users (legacy UUID-based auth)."""
+    # Validate session_id is provided
+    if not session_id:
+        logger.warning("Authentication attempt without session_id")
+        raise HTTPException(status_code=400, detail="Missing session_id parameter")
+    
     # Validate session_id is a valid UUID
     try:
-        if not session_id:
-            raise ValueError
         uuid.UUID(session_id)
-    except (ValueError, TypeError):
+    except (ValueError, TypeError) as e:
+        logger.warning(f"Invalid session_id format: {session_id}")
         raise HTTPException(status_code=400, detail="Invalid session_id format")
+    
+    # Check if session is authenticated
     if not is_authenticated(session_id):
+        logger.warning(f"Unauthenticated access attempt with session_id: {session_id}")
         raise HTTPException(status_code=401, detail="Authentication required")
     
+    logger.info(f"Serving authenticated content for session: {session_id}")
     return JSONResponse(content={"html": EASTER_EGG_CONTENT}, status_code=200)
 
 @app.get("/info.html")
@@ -345,26 +447,25 @@ async def serve_js():
 
 @app.post("/authenticate")
 async def authenticate(auth_data: AuthRequest):
-    """Handle authentication requests."""
+    """Handle authentication requests - simplified without session management."""
     try:
         username = auth_data.username.strip().lower()
         password = auth_data.password.strip()
         
         if username == USERNAME.lower() and password == PASSWORD:
-            # Create new session
-            session_id = create_session_id()
-            authenticated_sessions[session_id] = True
-            
+            logger.info(f"Authentication successful for user: {username}")
             return JSONResponse(
-                content={"authenticated": True, "session_id": session_id},
+                content={"authenticated": True},
                 status_code=200
             )
         else:
+            logger.warning(f"Invalid credentials attempt: {username}")
             return JSONResponse(
                 content={"authenticated": False, "error": "Invalid credentials"},
                 status_code=401
             )
     except Exception as e:
+        logger.error(f"Authentication error: {e}")
         return JSONResponse(
             content={"authenticated": False, "error": "Invalid JSON"},
             status_code=400

@@ -53,3 +53,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Test files (for development only)
+test_session_management.py

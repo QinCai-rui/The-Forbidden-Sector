@@ -6,55 +6,107 @@ A mysterious web server for Scene 65: The Forbidden Sector.
 
 - **Auto-reload functionality** using uvicorn for development
 - **FastAPI-based server** for modern API endpoints
-- **Docker containerisation** for easy deployment
+- **Redis-based session management** to prevent memory leaks
+- **Docker containerisation** with Redis for easy deployment
 - **Interactive challenges** and authentication system
 - **Dynamic file serving** for HTML, CSS, and JavaScript
+- **Robust error handling** and logging
+- **Session expiration** (24 hours) for security
 
 ## Running the Server
 
-### Method 1: Direct Python Execution
+### Method 1: Docker Compose (Recommended)
 
-1. Install dependencies:
+The complete stack includes Redis for session management:
+
+```bash
+docker compose up --build -d
+```
+
+This starts:
+- Redis server for session storage
+- FastAPI application server
+- Automatic volume mounting for development
+
+### Method 2: Direct Python Execution
+
+1. Start Redis server (optional - will fallback to in-memory if not available):
+
+```bash
+# Using Docker
+docker run -d -p 6379:6379 redis:7.2-alpine
+
+# Or install Redis locally and run: redis-server
+```
+
+2. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Run the server:
+3. Run the server:
 
 ```bash
 python server.py
 ```
 
-The server will start with auto-reload enabled on `http://localhost:9082`
-
-### Method 2: Using uvicorn directly
-
-```bash
-uvicorn server:app --host 0.0.0.0 --port 9082 --reload
-```
-
-### Method 3: Using Docker
-
-1. Build the Docker image:
+### Method 3: Using Docker (Application Only)
 
 ```bash
 docker build -t forbidden-sector .
-```
-
-2. Run the container:
-
-```bash
 docker run -p 9082:9082 forbidden-sector
 ```
 
-### Method 4: Using Docker Compose (Recommended)
+The server will start on `http://localhost:9082`
 
-```bash
-docker compose up -d 
-```
+## Session Management
 
-This will build and run the container with volume mounting for development.
+### Redis Backend (Prod)
+- **Persistent storage**: Sessions survive application restarts
+- **Memory efficient**: No memory leaks from session accumulation
+- **Automatic expiration**: 24-hour TTL prevents stale sessions
+- **Scalable**: Multiple application instances can share session data
+
+### In-Memory Fallback
+- **Automatic fallback**: Used when Redis is unavailable
+- **Development mode**: Suitable for local testing
+- **Warning logged**: Clear indication when fallback is active
+
+## API Endpoints
+
+- `GET /` - Main index page
+- `GET /info.html` - Information page with challenges
+- `POST /authenticate` - Authentication endpoint
+- `POST /create_session` - Create challenge tracking session
+- `GET /content/authenticated` - Protected content (requires session_id)
+- `GET /content/help` - Help content with challenges
+- `POST /check_answer` - Challenge answer verification
+- `GET /style.css` - CSS stylesheet
+- `GET /script.js` - JavaScript file
+
+## Authentication
+
+Default credentials:
+
+- Username: `github`
+- Password: `1550`
+
+### Authentication Flow
+1. User clicks "ATTEMPT AUTHENTICATION"
+2. Enters credentials in modal dialog
+3. JavaScript sends POST to `/authenticate`
+4. Server validates credentials and creates Redis session
+5. Session ID returned to client
+6. Client uses session ID to access protected content
+
+## Error Handling
+
+### Improved Error Messages
+- **400 Bad Request**: "Missing session_id parameter" or "Invalid session_id format"
+- **401 Unauthorized**: "Authentication required"
+- **Detailed logging**: Server logs authentication attempts and errors
+- **User-friendly alerts**: JavaScript shows clear error messages
 
 ## Development
 
@@ -65,29 +117,24 @@ The server includes auto-reload functionality that watches for changes in:
 - CSS files (style.css)
 - JavaScript files (script.js)
 
-Any changes to these files will automatically restart the server.
+## Environment Variables
 
-## API Endpoints
-
-- `GET /` - Main index page
-- `GET /info.html` - Information page with challenges
-- `POST /authenticate` - Authentication endpoint
-- `POST /check_answer` - Challenge answer verification
-- `GET /style.css` - CSS stylesheet
-- `GET /script.js` - JavaScript file
-
-## Authentication
-
-Default credentials: (YAY YOU FOUND THEM!!!)
-
-- Username: `github`
-- Password: `1550`
+- `REDIS_HOST`: Redis server hostname (default: "redis")
+- `REDIS_PORT`: Redis server port (default: "6379")
 
 ## Docker Environment
 
-The Dockerfile creates a lightweight Python environment with:
+The Docker setup includes:
 
-- FastAPI and uvicorn installed
-- Auto-reload enabled for development
-- Port 9082 exposed
-- Volume mounting support for live development
+### Application Container
+- **Base**: Python 3.12 slim
+- **FastAPI and uvicorn** with auto-reload
+- **Redis client** for session management
+- **Port 9082** exposed
+- **Volume mounting** for development
+
+### Redis Container
+- **Base**: Redis 7.2 Alpine
+- **Persistent volume** for data storage
+- **Optimized configuration** with AOF persistence
+- **Port 6379** exposed for debugging
