@@ -13,25 +13,6 @@ A mysterious web server for Scene 65: The Forbidden Sector.
 - **Robust error handling** and logging
 - **Session expiration** (24 hours) for security
 
-## Recent Improvements
-
-### 🚀 Fixed Authentication Issues
-- **Resolved "undefined" error**: Improved JavaScript authentication flow with better error handling
-- **Enhanced session validation**: Better error messages for missing or invalid session IDs
-- **Added comprehensive logging**: Console logs for debugging authentication flow
-
-### 🔄 Memory Leak Prevention
-- **Replaced in-memory dictionaries with Redis**: Prevents memory leaks from session accumulation
-- **Automatic session expiration**: 24-hour TTL on all sessions
-- **Graceful fallback**: Falls back to in-memory storage if Redis is unavailable
-- **Connection resilience**: Redis connection retry and error handling
-
-### 🐳 Enhanced Docker Setup
-- **Redis integration**: Added Redis container with persistent volume
-- **Docker Compose**: Complete stack with Redis and application
-- **Environment configuration**: Redis connection via environment variables
-- **Data persistence**: Redis data survives container restarts
-
 ## Running the Server
 
 ### Method 1: Docker Compose (Recommended)
@@ -81,13 +62,13 @@ The server will start on `http://localhost:9082`
 
 ## Session Management
 
-### Redis Backend (Production)
+### Redis Backend (Prod)
 - **Persistent storage**: Sessions survive application restarts
 - **Memory efficient**: No memory leaks from session accumulation
 - **Automatic expiration**: 24-hour TTL prevents stale sessions
 - **Scalable**: Multiple application instances can share session data
 
-### In-Memory Fallback (Development)
+### In-Memory Fallback
 - **Automatic fallback**: Used when Redis is unavailable
 - **Development mode**: Suitable for local testing
 - **Warning logged**: Clear indication when fallback is active
@@ -135,20 +116,6 @@ The server includes auto-reload functionality that watches for changes in:
 - HTML files (index.html, info.html)
 - CSS files (style.css)
 - JavaScript files (script.js)
-
-## Testing
-
-Run the session management test to verify Redis integration:
-
-```bash
-python test_session_management.py
-```
-
-This test:
-- Creates 100 authentication sessions
-- Measures memory usage (should be minimal with Redis)
-- Verifies session access
-- Demonstrates memory leak prevention
 
 ## Environment Variables
 
