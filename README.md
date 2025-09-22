@@ -8,7 +8,7 @@ A mysterious web server for Scene 65: The Forbidden Sector.
 - **FastAPI-based server** for modern API endpoints
 - **Docker containerisation** for easy deployment
 - **Interactive challenges** and authentication system
-- **Static file serving** for HTML, CSS, and JavaScript
+- **Dynamic file serving** for HTML, CSS, and JavaScript
 
 ## Running the Server
 
