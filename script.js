@@ -5,6 +5,7 @@
 const HELP_COMMAND = 'help';
 let userInput = '';
 let sequenceTimeout;
+let sessionId = '';
 
 // DOM elements
 const forbiddenPage = document.getElementById('forbidden-page');
@@ -16,6 +17,18 @@ const authButton = document.getElementById('auth-button');
 function init() {
     setupEventListeners();
     updateHintPeriodically();
+    createSession();
+}
+
+// Create a session for challenge tracking
+async function createSession() {
+    try {
+        const response = await fetch('/create_session', { method: 'POST' });
+        const data = await response.json();
+        sessionId = data.session_id;
+    } catch (error) {
+        console.error('Failed to create session:', error);
+    }
 }
 
 // Setup all event listeners
@@ -67,9 +80,23 @@ function redirectToInfoPage() {
 }
 
 // Load dynamic content into the page
-async function loadDynamicContent(endpoint) {
+async function loadDynamicContent(endpoint, sessionIdParam = null) {
     try {
-        const response = await fetch(endpoint);
+        let url = endpoint;
+        if (sessionIdParam) {
+            url += `?session_id=${encodeURIComponent(sessionIdParam)}`;
+        }
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            if (response.status === 401) {
+                console.error('Authentication required for this content');
+                return;
+            }
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
         const data = await response.json();
         
         // Replace body content with new content
@@ -94,15 +121,14 @@ async function loadDynamicContent(endpoint) {
 
 // Initialize challenge handling for the info page
 function initializeChallengeHandling() {
-    // All answer checking is now server-side cos ik some ppl hmm
-    let challengesCompleted = 0;
-    function updateProgress() {
+    // Server-side challenge tracking - remove client-side count
+    function updateProgress(serverChallengeCount) {
         const progressFill = document.getElementById('progressFill');
         const challengeCount = document.getElementById('challengeCount');
         if (progressFill && challengeCount) {
-            const percentage = (challengesCompleted / 5) * 100;
+            const percentage = (serverChallengeCount / 5) * 100;
             progressFill.style.width = percentage + '%';
-            challengeCount.textContent = challengesCompleted;
+            challengeCount.textContent = serverChallengeCount;
         }
     }
     
@@ -142,9 +168,9 @@ function initializeChallengeHandling() {
             let payload = {};
             if (type === 'final') {
                 if (inputs.length < 2) return;
-                payload = { type: 'final', username: inputs[0].value, password: inputs[1].value };
+                payload = { type: 'final', username: inputs[0].value, password: inputs[1].value, session_id: sessionId };
             } else {
-                payload = { type, value: inputs[0].value };
+                payload = { type, value: inputs[0].value, session_id: sessionId };
             }
             try {
                 const response = await fetch('/check_answer', {
@@ -161,8 +187,10 @@ function initializeChallengeHandling() {
                     
                     solutionDiv.innerHTML = '<strong>✅ Correct!</strong>';
                     solutionDiv.style.display = 'block';
-                    challengesCompleted++;
-                    updateProgress();
+                    
+                    // Update progress using server-side count
+                    updateProgress(result.challenge_count || 0);
+                    
                     if (type === 'final') {
                         setTimeout(() => {
                             const credentialsSummary = document.getElementById('credentialsSummary');
@@ -265,6 +293,8 @@ function createAuthDialog() {
             const result = await response.json();
             
             if (result.authenticated) {
+                // Store the authenticated session ID
+                sessionId = result.session_id;
                 document.body.removeChild(modal);
                 unlockHiddenSite();
             } else {
@@ -296,7 +326,7 @@ function createAuthDialog() {
 
 // Unlock the hidden site
 function unlockHiddenSite() {
-    loadDynamicContent('/content/authenticated');
+    loadDynamicContent('/content/authenticated', sessionId);
     
     // Play unlock sound effect
     playUnlockSound();
