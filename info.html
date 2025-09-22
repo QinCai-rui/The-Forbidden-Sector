@@ -147,8 +147,8 @@
                 <div class="credentials-summary" id="credentialsSummary" style="display: none;">
                     <h2>🚀 EXPEDITION CREDENTIALS DISCOVERED!</h2>
                     <div class="credentials-box">
-                        <p><strong>Username:</strong> <code>github</code></p>
-                        <p><strong>Password:</strong> <code>1550</code></p>
+                        <p><strong>Username:</strong> <code>the username you just entered</code></p>
+                        <p><strong>Password:</strong> <code>the password you just entered</code></p>
                     </div>
                     <p>Use these credentials to access the forbidden sector and uncover the hidden expedition archive!</p>
                     <a href="index.html" class="return-btn">🔙 Return to Forbidden Sector</a>
@@ -229,7 +229,11 @@
                     });
                     const result = await response.json();
                     if (result.correct) {
-                        form.style.display = 'none';
+                        // Hide the input fields and submit button, but keep the form visible for the success message
+                        inputs.forEach(input => input.style.display = 'none');
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        if (submitBtn) submitBtn.style.display = 'none';
+                        
                         solutionDiv.innerHTML = '<strong>✅ Correct!</strong>';
                         solutionDiv.style.display = 'block';
                         challengesCompleted++;
