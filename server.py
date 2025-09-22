@@ -312,7 +312,14 @@ async def create_session():
 @app.get("/content/authenticated")
 async def get_authenticated_content(session_id: str = None):
     """Serve easter egg content for authenticated users."""
-    if not session_id or not is_authenticated(session_id):
+    # Validate session_id is a valid UUID
+    try:
+        if not session_id:
+            raise ValueError
+        uuid.UUID(session_id)
+    except (ValueError, TypeError):
+        raise HTTPException(status_code=400, detail="Invalid session_id format")
+    if not is_authenticated(session_id):
         raise HTTPException(status_code=401, detail="Authentication required")
     
     return JSONResponse(content={"html": EASTER_EGG_CONTENT}, status_code=200)
