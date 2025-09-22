@@ -386,9 +386,28 @@ async def create_session():
     set_challenge_count(session_id, 0)
     return JSONResponse(content={"session_id": session_id}, status_code=200)
 
+@app.post("/content/authenticated")
+async def get_authenticated_content_post(auth_data: AuthRequest):
+    """Serve easter egg content for authenticated users via direct credential verification."""
+    try:
+        username = auth_data.username.strip().lower()
+        password = auth_data.password.strip()
+        
+        if username == USERNAME.lower() and password == PASSWORD:
+            logger.info(f"Direct authentication successful for user: {username}")
+            return JSONResponse(content={"html": EASTER_EGG_CONTENT}, status_code=200)
+        else:
+            logger.warning(f"Invalid credentials attempt: {username}")
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+    except HTTPException:
+        raise  # Re-raise HTTP exceptions as-is
+    except Exception as e:
+        logger.error(f"Authentication error: {e}")
+        raise HTTPException(status_code=400, detail="Invalid request format")
+
 @app.get("/content/authenticated")
 async def get_authenticated_content(session_id: str = None):
-    """Serve easter egg content for authenticated users."""
+    """Serve easter egg content for authenticated users (legacy UUID-based auth)."""
     # Validate session_id is provided
     if not session_id:
         logger.warning("Authentication attempt without session_id")
@@ -429,21 +448,19 @@ async def serve_js():
 
 @app.post("/authenticate")
 async def authenticate(auth_data: AuthRequest):
-    """Handle authentication requests."""
+    """Handle authentication requests - simplified without session management."""
     try:
         username = auth_data.username.strip().lower()
         password = auth_data.password.strip()
         
         if username == USERNAME.lower() and password == PASSWORD:
-            # Create new session
-            session_id = create_session_id()
-            set_authenticated(session_id, True)
-            
+            logger.info(f"Authentication successful for user: {username}")
             return JSONResponse(
-                content={"authenticated": True, "session_id": session_id},
+                content={"authenticated": True},
                 status_code=200
             )
         else:
+            logger.warning(f"Invalid credentials attempt: {username}")
             return JSONResponse(
                 content={"authenticated": False, "error": "Invalid credentials"},
                 status_code=401
