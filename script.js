@@ -63,7 +63,129 @@ function handleKeyDown(event) {
 
 // Redirect to info page with riddles
 function redirectToInfoPage() {
-    window.location.href = '/info.html';
+    loadDynamicContent('/content/help');
+}
+
+// Load dynamic content into the page
+async function loadDynamicContent(endpoint) {
+    try {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        
+        // Replace body content with new content
+        document.body.innerHTML = data.html;
+        
+        // Add CSS link to head if not present
+        if (!document.querySelector('link[href="style.css"]')) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'style.css';
+            document.head.appendChild(link);
+        }
+        
+        // Initialize challenge handling for info page
+        if (endpoint === '/content/help') {
+            initializeChallengeHandling();
+        }
+    } catch (error) {
+        console.error('Failed to load content:', error);
+    }
+}
+
+// Initialize challenge handling for the info page
+function initializeChallengeHandling() {
+    // All answer checking is now server-side cos ik some ppl hmm
+    let challengesCompleted = 0;
+    function updateProgress() {
+        const progressFill = document.getElementById('progressFill');
+        const challengeCount = document.getElementById('challengeCount');
+        if (progressFill && challengeCount) {
+            const percentage = (challengesCompleted / 5) * 100;
+            progressFill.style.width = percentage + '%';
+            challengeCount.textContent = challengesCompleted;
+        }
+    }
+    
+    // Animate challenge boxes
+    const challengeBoxes = document.querySelectorAll('.challenge-box');
+    challengeBoxes.forEach((box, index) => {
+        setTimeout(() => {
+            box.style.opacity = '0';
+            box.style.transform = 'translateY(20px)';
+            box.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            setTimeout(() => {
+                box.style.opacity = '1';
+                box.style.transform = 'translateY(0)';
+            }, 100);
+        }, index * 200);
+    });
+    
+    // Glitch effect
+    const glitchText = document.getElementById('glitchText');
+    if (glitchText) {
+        setInterval(() => {
+            glitchText.classList.add('glitch-active');
+            setTimeout(() => {
+                glitchText.classList.remove('glitch-active');
+            }, 200);
+        }, 3000);
+    }
+    
+    // Handle all challenge forms
+    document.querySelectorAll('.answer-form').forEach(form => {
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const type = form.getAttribute('data-type');
+            const inputs = form.querySelectorAll('input');
+            const solutionDiv = form.querySelector('.solution');
+            solutionDiv.style.display = 'none';
+            let payload = {};
+            if (type === 'final') {
+                if (inputs.length < 2) return;
+                payload = { type: 'final', username: inputs[0].value, password: inputs[1].value };
+            } else {
+                payload = { type, value: inputs[0].value };
+            }
+            try {
+                const response = await fetch('/check_answer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.correct) {
+                    // Hide the input fields and submit button, but keep the form visible for the success message
+                    inputs.forEach(input => input.style.display = 'none');
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) submitBtn.style.display = 'none';
+                    
+                    solutionDiv.innerHTML = '<strong>✅ Correct!</strong>';
+                    solutionDiv.style.display = 'block';
+                    challengesCompleted++;
+                    updateProgress();
+                    if (type === 'final') {
+                        setTimeout(() => {
+                            const credentialsSummary = document.getElementById('credentialsSummary');
+                            if (credentialsSummary) {
+                                credentialsSummary.style.display = 'block';
+                                credentialsSummary.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }, 1000);
+                    }
+                } else {
+                    inputs.forEach(input => {
+                        input.value = '';
+                        input.placeholder = 'Try again!';
+                        input.classList.add('wrong');
+                    });
+                    setTimeout(() => inputs.forEach(input => input.classList.remove('wrong')), 800);
+                }
+            } catch (err) {
+                solutionDiv.innerHTML = '<span style="color:red">Server error. Try again.</span>';
+                solutionDiv.style.display = 'block';
+            }
+        });
+    });
 }
 
 // Create authentication dialog
@@ -174,8 +296,7 @@ function createAuthDialog() {
 
 // Unlock the hidden site
 function unlockHiddenSite() {
-    forbiddenPage.style.display = 'none';
-    hiddenSite.style.display = 'block';
+    loadDynamicContent('/content/authenticated');
     
     // Play unlock sound effect
     playUnlockSound();
