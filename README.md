@@ -78,7 +78,7 @@ Any changes to these files will automatically restart the server.
 
 ## Authentication
 
-Default credentials:
+Default credentials: (YAY YOU FOUND THEM!!!)
 
 - Username: `github`
 - Password: `1550`
