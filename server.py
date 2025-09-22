@@ -8,11 +8,17 @@ import base64
 import binascii
 import os
 from pathlib import Path
+import uuid
+from typing import Dict
 
 app = FastAPI(title="The Forbidden Sector", description="Scene 65: Classified Access")
 
 USERNAME = "github"
 PASSWORD = "1550"
+
+# Server-side session storage for authentication and challenge tracking
+authenticated_sessions: Dict[str, bool] = {}
+challenge_progress: Dict[str, int] = {}
 
 INDEX_PAGE = "index.html"
 
@@ -246,11 +252,30 @@ class AnswerRequest(BaseModel):
     value: str = ""
     username: str = ""
     password: str = ""
+    session_id: str = ""
 
 # Helper functions
 def file_exists(filename: str) -> bool:
     """Check if a file exists in the current directory."""
     return os.path.isfile(filename)
+
+def create_session_id() -> str:
+    """Create a unique session ID."""
+    return str(uuid.uuid4())
+
+def is_authenticated(session_id: str) -> bool:
+    """Check if a session is authenticated."""
+    return session_id in authenticated_sessions and authenticated_sessions[session_id]
+
+def get_challenge_count(session_id: str) -> int:
+    """Get challenge completion count for a session."""
+    return challenge_progress.get(session_id, 0)
+
+def increment_challenge_count(session_id: str) -> int:
+    """Increment challenge completion count for a session."""
+    current_count = challenge_progress.get(session_id, 0)
+    challenge_progress[session_id] = current_count + 1
+    return challenge_progress[session_id]
 
 def serve_file_content(filename: str, content_type: str = "text/html") -> Response:
     """Serve file content with proper error handling."""
@@ -277,9 +302,19 @@ async def get_help_content():
     """Serve help/info page content dynamically."""
     return JSONResponse(content={"html": INFO_PAGE_CONTENT}, status_code=200)
 
+@app.post("/create_session")
+async def create_session():
+    """Create a new session for challenge tracking."""
+    session_id = create_session_id()
+    challenge_progress[session_id] = 0
+    return JSONResponse(content={"session_id": session_id}, status_code=200)
+
 @app.get("/content/authenticated")
-async def get_authenticated_content():
+async def get_authenticated_content(session_id: str = None):
     """Serve easter egg content for authenticated users."""
+    if not session_id or not is_authenticated(session_id):
+        raise HTTPException(status_code=401, detail="Authentication required")
+    
     return JSONResponse(content={"html": EASTER_EGG_CONTENT}, status_code=200)
 
 @app.get("/info.html")
@@ -308,8 +343,12 @@ async def authenticate(auth_data: AuthRequest):
         password = auth_data.password.strip()
         
         if username == USERNAME and password == PASSWORD:
+            # Create new session
+            session_id = create_session_id()
+            authenticated_sessions[session_id] = True
+            
             return JSONResponse(
-                content={"authenticated": True},
+                content={"authenticated": True, "session_id": session_id},
                 status_code=200
             )
         else:
@@ -378,6 +417,7 @@ async def check_answer(answer_data: AnswerRequest):
     try:
         challenge_type = answer_data.type.strip()
         user_value = answer_data.value.strip().lower()
+        session_id = answer_data.session_id.strip() if answer_data.session_id else ""
         
         correct = False
         
@@ -395,7 +435,15 @@ async def check_answer(answer_data: AnswerRequest):
             password = answer_data.password.strip()
             correct = (username == 'github' and password == '1550')
         
-        return JSONResponse(content={"correct": correct}, status_code=200)
+        # Track challenge completion server-side
+        challenge_count = get_challenge_count(session_id)
+        if correct and session_id:
+            challenge_count = increment_challenge_count(session_id)
+        
+        return JSONResponse(content={
+            "correct": correct, 
+            "challenge_count": challenge_count
+        }, status_code=200)
         
     except Exception as e:
         return JSONResponse(
