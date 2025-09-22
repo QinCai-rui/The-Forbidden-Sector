@@ -87,14 +87,22 @@ async function loadDynamicContent(endpoint, sessionIdParam = null) {
             url += `?session_id=${encodeURIComponent(sessionIdParam)}`;
         }
         
+        console.log('Loading content from:', url);
+        
         const response = await fetch(url);
         
         if (!response.ok) {
             if (response.status === 401) {
                 console.error('Authentication required for this content');
+                alert('Authentication required. Please log in again.');
                 return;
             }
-            throw new Error(`HTTP ${response.status}`);
+            if (response.status === 400) {
+                console.error('Bad request - likely missing or invalid session ID');
+                alert('Authentication error. Please try logging in again.');
+                return;
+            }
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
@@ -116,6 +124,7 @@ async function loadDynamicContent(endpoint, sessionIdParam = null) {
         }
     } catch (error) {
         console.error('Failed to load content:', error);
+        alert(`Failed to load content: ${error.message}`);
     }
 }
 
@@ -292,9 +301,10 @@ function createAuthDialog() {
             });
             const result = await response.json();
             
-            if (result.authenticated) {
+            if (result.authenticated && result.session_id) {
                 // Store the authenticated session ID
                 sessionId = result.session_id;
+                console.log('Authentication successful, session ID:', sessionId);
                 document.body.removeChild(modal);
                 unlockHiddenSite();
             } else {
@@ -306,6 +316,7 @@ function createAuthDialog() {
                 document.getElementById('username').focus();
             }
         } catch (err) {
+            console.error('Authentication error:', err);
             errorDiv.textContent = 'Connection failed - try again';
             errorDiv.style.display = 'block';
         }
@@ -326,6 +337,13 @@ function createAuthDialog() {
 
 // Unlock the hidden site
 function unlockHiddenSite() {
+    console.log('Unlocking hidden site with session ID:', sessionId);
+    if (!sessionId) {
+        console.error('No session ID available for authentication');
+        alert('Authentication error: No session ID. Please try logging in again.');
+        return;
+    }
+    
     loadDynamicContent('/content/authenticated', sessionId);
     
     // Play unlock sound effect
