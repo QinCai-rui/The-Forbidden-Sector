@@ -182,15 +182,22 @@ function unlockHiddenSite() {
 }
 
 // Update hint text periodically
+// TODO: Add easier hints
 function updateHintPeriodically() {
     const hints = [
-        "Perhaps some secrets lie hidden in the shadows...",
+        "Try type something. Anything...",
         "There might be ways to find assistance...",
-        "When lost, explorers often seek guidance...",
         "Some commands might provide direction...",
         "If stuck, one might ask for assistance...",
-        "Expeditions require proper preparation and knowledge...",
-        "The wise explorer knows when to seek aid..."
+        "The wise explorer knows when to seek aid...",
+        "Remember, help is often just a command away...",
+        "H.E.L.P. Hmm, just a thought...",
+        "Four letters, one word, starts with H. Just saying...",
+        "Maybe you could try look into script.js...",
+        "HkddndEhdhdhLhdeahP. Just kidding, or am I?",
+        "Come on, it's not that hard...",
+        "The answer is RIGHT in front of you...",
+        "The source is on GitHub, if you know where to look..."
     ];
     
     let currentHint = 0;
@@ -200,7 +207,7 @@ function updateHintPeriodically() {
             hint.innerHTML = `<small>${hints[currentHint]}</small>`;
             currentHint = (currentHint + 1) % hints.length;
         }
-    }, 5000);
+    }, 3000);
 }
 
 // Play unlock sound effect (simple beep using Web Audio API)
