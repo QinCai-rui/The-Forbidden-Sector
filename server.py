@@ -253,7 +253,6 @@ EASTER_EGG_CONTENT = """
                 <a href="https://isle.a.hackclub.dev/scenes/27" target="_blank" class="expedition-link">
                     🗺️ Access the Discouraged Sector (Scene 27)
                 </a>
-                <a href="
                 <div class="hidden-message">
                     <strong>Classified Note:</strong> The true treasure was the friends and projects made along the way. 
                     Keep exploring, keep creating, and remember: in the world of making, there are no forbidden sectors—only undiscovered possibilities.
