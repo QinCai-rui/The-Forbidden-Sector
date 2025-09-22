@@ -85,28 +85,12 @@ The server will start on `http://localhost:9082`
 - `GET /style.css` - CSS stylesheet
 - `GET /script.js` - JavaScript file
 
-## Authentication
+## Redirect command (YAY YOU FOUND IT!!)
 
-Default credentials:
+The command that shows users the info page is:
+`help`
 
-- Username: `github`
-- Password: `1550`
-
-### Authentication Flow
-1. User clicks "ATTEMPT AUTHENTICATION"
-2. Enters credentials in modal dialog
-3. JavaScript sends POST to `/authenticate`
-4. Server validates credentials and creates Redis session
-5. Session ID returned to client
-6. Client uses session ID to access protected content
-
-## Error Handling
-
-### Improved Error Messages
-- **400 Bad Request**: "Missing session_id parameter" or "Invalid session_id format"
-- **401 Unauthorized**: "Authentication required"
-- **Detailed logging**: Server logs authentication attempts and errors
-- **User-friendly alerts**: JavaScript shows clear error messages
+Want the username and password? It's here somewhere... hmm...
 
 ## Development
 
