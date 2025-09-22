@@ -1,141 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scene 65: The Forbidden Sector</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>403 Forbidden - The Forbidden Sector</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="container">
-        <div class="terminal-window">
-            <div class="terminal-header">
-                <div class="terminal-controls">
-                    <span class="control close"></span>
-                    <span class="control minimize"></span>
-                    <span class="control maximize"></span>
-                </div>
-                <div class="terminal-title">SECTOR_65_CLASSIFIED.exe</div>
+    <!-- 403 Forbidden Page -->
+    <div id="forbidden-page" class="forbidden-container">
+        <div class="error-content">
+            <h1 class="error-code">403</h1>
+            <h2 class="error-message">FORBIDDEN</h2>
+            <p class="error-description">
+                You don't have permission to access this resource.<br>
+                <span class="sector-label">The Forbidden Sector - Scene 65</span>
+            </p>
+            <div class="warning">
+                <p>⚠️ DO NOT GO HERE ⚠️</p>
             </div>
-            <div class="terminal-body">
-                <div class="ascii-art">
-<pre>
-███████╗ ██████╗███████╗███╗   ██╗███████╗     ██████╗ ███████╗
-██╔════╝██╔════╝██╔════╝████╗  ██║██╔════╝    ██╔════╝ ██╔════╝
-███████╗██║     █████╗  ██╔██╗ ██║█████╗      ███████╗ ███████╗
-╚════██║██║     ██╔══╝  ██║╚██╗██║██╔══╝      ██╔═══██╗╚════██║
-███████║╚██████╗███████╗██║ ╚████║███████╗    ╚██████╔╝███████║
-╚══════╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚══════╝     ╚═════╝ ╚══════╝
-
-        ████████╗██╗  ██╗███████╗    ███████╗ ██████╗ ██████╗ ██████╗ ██╗██████╗ ██████╗ ███████╗███╗   ██╗
-        ╚══██╔══╝██║  ██║██╔════╝    ██╔════╝██╔═══██╗██╔══██╗██╔══██╗██║██╔══██╗██╔══██╗██╔════╝████╗  ██║
-           ██║   ███████║█████╗      █████╗  ██║   ██║██████╔╝██████╔╝██║██║  ██║██║  ██║█████╗  ██╔██╗ ██║
-           ██║   ██╔══██║██╔══╝      ██╔══╝  ██║   ██║██╔══██╗██╔══██╗██║██║  ██║██║  ██║██╔══╝  ██║╚██╗██║
-           ██║   ██║  ██║███████╗    ██║     ╚██████╔╝██║  ██║██████╔╝██║██████╔╝██████╔╝███████╗██║ ╚████║
-           ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═════╝ ╚═╝╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝
-
-              ███████╗███████╗ ██████╗████████╗ ██████╗ ██████╗ 
-              ██╔════╝██╔════╝██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗
-              ███████╗█████╗  ██║        ██║   ██║   ██║██████╔╝
-              ╚════██║██╔══╝  ██║        ██║   ██║   ██║██╔══██╗
-              ███████║███████╗╚██████╗   ██║   ╚██████╔╝██║  ██║
-              ╚══════╝╚══════╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝
-</pre>
-                </div>
-                
-                <div class="loading-sequence">
-                    <div class="loading-line">
-                        <span class="prompt">[SYSTEM]</span> Initializing quantum encryption protocols...
-                        <span class="loading-dots">...</span>
-                    </div>
-                    <div class="loading-line">
-                        <span class="prompt">[SYSTEM]</span> Scanning for authorized personnel...
-                        <span class="loading-dots">...</span>
-                    </div>
-                    <div class="loading-line">
-                        <span class="prompt">[SYSTEM]</span> Establishing secure connection...
-                        <span class="loading-dots">...</span>
-                    </div>
-                </div>
-
-                <div class="warning-message">
-                    <div class="warning-header">⚠️ RESTRICTED ACCESS ZONE ⚠️</div>
-                    <p>You are attempting to access <strong>SCENE 65: THE FORBIDDEN SECTOR</strong></p>
-                    <p>This area contains classified information regarding:</p>
-                    <ul>
-                        <li>Quantum survey expedition protocols</li>
-                        <li>Interdimensional mapping algorithms</li>
-                        <li>Reality breach containment procedures</li>
-                        <li>The Summer of Making Grand Survey Archive</li>
-                    </ul>
-                    <div class="auth-required">
-                        <strong>AUTHENTICATION REQUIRED</strong><br>
-                        Only authorised expedition members may proceed.
-                    </div>
-                </div>
-
-                <div class="easter-egg-content" id="easterEggContent" style="display: none;">
-                    <div class="success-header">🎉 WELCOME, EXPEDITION MEMBER! 🎉</div>
-                    <div class="grand-survey-content">
-                        <h2>THE GRAND SURVEY EXPEDITION</h2>
-                        <p>Congratulations! You've successfully infiltrated the forbidden sector and discovered the hidden archive of the <strong>Hack Club Summer of Making Grand Survey Expedition</strong>.</p>
-                        
-                        <div class="expedition-details">
-                            <h3>🚀 Mission Briefing:</h3>
-                            <p>The Grand Survey was a legendary expedition across the digital cosmos, mapping uncharted territories of creativity and innovation during the Summer of Making.</p>
-                            
-                            <h3>📡 Discovered Artifacts:</h3>
-                            <ul>
-                                <li><strong>Project Constellation:</strong> A mapping of maker projects across space-time</li>
-                                <li><strong>The Creativity Engine:</strong> Quantum algorithms for inspiration generation</li>
-                                <li><strong>Community Nexus:</strong> Interdimensional communication protocols</li>
-                                <li><strong>Innovation Protocols:</strong> Guidelines for reality-bending projects</li>
-                            </ul>
-                            
-                            <h3>🔬 Secret Research Data:</h3>
-                            <div class="data-block">
-                                <code>
-                                EXPEDITION_STATUS: ONGOING<br>
-                                DIMENSIONS_MAPPED: ∞<br>
-                                MAKERS_INSPIRED: 47,892<br>
-                                PROJECTS_CREATED: COUNTLESS<br>
-                                IMPOSSIBLE_MADE_POSSIBLE: TRUE
-                                </code>
-                            </div>
-                            
-                            <h3>🌟 Your Mission, Should You Choose to Accept:</h3>
-                            <p>Join the ongoing expedition! Create something impossible, map new territories of learning, and add your discoveries to the Grand Survey archive.</p>
-                            
-                            <div class="expedition-links">
-                                <a href="https://github.com/hackclub/som-grand-survey-expedition" target="_blank" class="expedition-link">
-                                    🗺️ Access the Full Expedition Archive
-                                </a>
-                                <div class="hidden-message">
-                                    <strong>Classified Note:</strong> The true treasure was the friends and projects made along the way. 
-                                    Keep exploring, keep creating, and remember: in the world of making, there are no forbidden sectors—only undiscovered possibilities.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="command-prompt">
-                    <span class="prompt-text">expedition@forbidden-sector:~$</span>
-                    <span class="cursor">_</span>
-                </div>
+            <div class="hint" id="hint">
+                <small>Perhaps some secrets lie hidden in the shadows...</small>
             </div>
-        </div>
-        
-        <div class="help-link">
-            <a href="info.html" id="helpLink">Need help accessing this sector?</a>
+            <div class="auth-button-container">
+                <button id="auth-button" class="auth-button">🔐 ATTEMPT AUTHENTICATION</button>
+            </div>
         </div>
     </div>
 
-        <script src="script.js"></script>
+    <!-- Hidden Website -->
+    <div id="hidden-site" class="hidden-container" style="display: none;">
+        <div class="hidden-content">
+            <header class="secret-header">
+                <h1 class="glitch" data-text="SECTOR-65 UNLOCKED">SECTOR-65 UNLOCKED</h1>
+                <p class="access-granted">Access Granted - Welcome to the Forbidden Archive</p>
+            </header>
+
+            <div class="expedition-details">
+                <h2>THE GRAND SURVEY EXPEDITION</h2>
+                <p>Congratulations! You've successfully infiltrated the forbidden sector and discovered the hidden archive of the <strong>Hack Club Summer of Making Grand Survey Expedition</strong>.</p>
+                
+                <h3>🚀 Mission Briefing:</h3>
+                <p>The Grand Survey was a legendary expedition across the digital cosmos, mapping uncharted territories of creativity and innovation during the Summer of Making.</p>
+                
+                <h3>📡 Discovered Artifacts:</h3>
+                <ul>
+                    <li><strong>Project Constellation:</strong> A mapping of maker projects across space-time</li>
+                    <li><strong>The Creativity Engine:</strong> Quantum algorithms for inspiration generation</li>
+                    <li><strong>Community Nexus:</strong> Interdimensional communication protocols</li>
+                    <li><strong>Innovation Protocols:</strong> Guidelines for reality-bending projects</li>
+                </ul>
+                
+                <h3>🔬 Secret Research Data:</h3>
+                <div class="data-block">
+                    <code>
+                    EXPEDITION_STATUS: ONGOING<br>
+                    DIMENSIONS_MAPPED: ∞<br>
+                    MAKERS_INSPIRED: 47,892<br>
+                    PROJECTS_CREATED: COUNTLESS<br>
+                    IMPOSSIBLE_MADE_POSSIBLE: TRUE
+                    </code>
+                </div>
+                
+                <h3>🌟 Your Mission, Should You Choose to Accept:</h3>
+                <p>Join the ongoing expedition! Create something impossible, map new territories of learning, and add your discoveries to the Grand Survey archive.</p>
+                
+                <div class="expedition-links">
+                    <a href="https://github.com/hackclub/som-grand-survey-expedition" target="_blank" class="expedition-link">
+                        🗺️ Access the Full Expedition Archive
+                    </a>
+                    <div class="hidden-message">
+                        <strong>Classified Note:</strong> The true treasure was the friends and projects made along the way. 
+                        Keep exploring, keep creating, and remember: in the world of making, there are no forbidden sectors—only undiscovered possibilities.
+                    </div>
+                </div>
+            </div>
+
+            <footer class="secret-footer">
+                <p>🔒 Sector-65 Classified Archive | Clearance Level: ULTRA</p>
+                <div class="help-link">
+                    <a href="info.html" target="_blank">Need help accessing this sector?</a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
