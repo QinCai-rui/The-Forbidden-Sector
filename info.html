@@ -229,7 +229,11 @@
                     });
                     const result = await response.json();
                     if (result.correct) {
-                        form.style.display = 'none';
+                        // Hide the input fields and submit button, but keep the form visible for the success message
+                        inputs.forEach(input => input.style.display = 'none');
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        if (submitBtn) submitBtn.style.display = 'none';
+                        
                         solutionDiv.innerHTML = '<strong>✅ Correct!</strong>';
                         solutionDiv.style.display = 'block';
                         challengesCompleted++;
