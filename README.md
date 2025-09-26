@@ -24,6 +24,7 @@ docker compose up --build -d
 ```
 
 This starts:
+
 - Redis server for session storage
 - FastAPI application server
 - Automatic volume mounting for development
@@ -63,12 +64,14 @@ The server will start on `http://localhost:9082`
 ## Session Management
 
 ### Redis Backend (Prod)
+
 - **Persistent storage**: Sessions survive application restarts
 - **Memory efficient**: No memory leaks from session accumulation
 - **Automatic expiration**: 24-hour TTL prevents stale sessions
 - **Scalable**: Multiple application instances can share session data
 
 ### In-Memory Fallback
+
 - **Automatic fallback**: Used when Redis is unavailable
 - **Development mode**: Suitable for local testing
 - **Warning logged**: Clear indication when fallback is active
@@ -110,6 +113,7 @@ The server includes auto-reload functionality that watches for changes in:
 The Docker setup includes:
 
 ### Application Container
+
 - **Base**: Python 3.12 slim
 - **FastAPI and uvicorn** with auto-reload
 - **Redis client** for session management
@@ -117,7 +121,7 @@ The Docker setup includes:
 - **Volume mounting** for development
 
 ### Redis Container
+
 - **Base**: Redis 7.2 Alpine
 - **Persistent volume** for data storage
 - **Optimized configuration** with AOF persistence
-- **Port 6379** exposed for debugging
