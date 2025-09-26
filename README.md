@@ -4,14 +4,12 @@ A mysterious web server for Scene 65: The Forbidden Sector.
 
 ## Features
 
-- **Auto-reload functionality** using uvicorn for development
-- **FastAPI-based server** for modern API endpoints
-- **Redis-based session management** to prevent memory leaks
-- **Docker containerisation** with Redis for easy deployment
-- **Interactive challenges** and authentication system
-- **Dynamic file serving** for HTML, CSS, and JavaScript
-- **Robust error handling** and logging
-- **Session expiration** (24 hours) for security
+- Auto-reload (uvicorn) for development
+- FastAPI server
+- Redis-backed sessions with in-memory fallback
+- Docker Compose stack for app + Redis
+- Interactive client-side challenges and auth
+- Static + dynamic content serving (HTML/CSS/JS)
 
 ## Running the Server
 
@@ -79,18 +77,16 @@ The server will start on `http://localhost:9082`
 ## API Endpoints
 
 - `GET /` - Main index page
-- `GET /info.html` - Information page with challenges (redirects to `/` if no session)
-- `POST /authenticate` - Authentication endpoint
-- `POST /create_session` - Create challenge tracking session
-- `GET /content/help` - Help content with challenges
-- `POST /check_answer` - Challenge answer verification
-- `GET /style.css` - CSS stylesheet
-- `GET /script.js` - JavaScript file
+- `GET /info.html` - (redirects to `/` by design)
+- `GET /content/help` - Challenge HTML (loaded dynamically)
+- `POST /create_session` - returns `{ "session_id": "..." }`
+- `POST /check_answer` - submit answers
+- `POST /authenticate` - JSON username/password auth
+- `GET /style.css`, `GET /script.js` - static assets
 
 ## Redirect command (YAY YOU FOUND IT!!)
 
-The command that shows users the info page is:
-`help`
+Type **`help`** (keyboard sequence) on the landing page to load the interactive challenge UI. Direct `GET /info.html` is redirected to `/` intentionally.
 
 Want the username and password? It's here somewhere... hmm...
 
