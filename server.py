@@ -20,8 +20,10 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="The Forbidden Sector", description="Scene 65: Classified Access")
 
-USERNAME = "github"
-PASSWORD = "1550"
+############################
+USERNAME = "github"        #
+PASSWORD = "1550"          #
+############################
 
 # Redis connection for session storage to avoid memory leaks
 try:
