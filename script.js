@@ -9,7 +9,6 @@ let challengeSessionId = '';  // For challenge tracking only
 
 // DOM elements
 const forbiddenPage = document.getElementById('forbidden-page');
-const hiddenSite = document.getElementById('hidden-site');
 const hint = document.getElementById('hint');
 const authButton = document.getElementById('auth-button');
 
@@ -45,8 +44,8 @@ function setupEventListeners() {
 
 // Handle keyboard input for help command
 function handleKeyDown(event) {
-    // Only process if on forbidden page
-    if (hiddenSite.style.display !== 'none') return;
+    // Only process if not on authenticated page
+    if (document.body.innerHTML.includes('SECTOR-65 UNLOCKED')) return;
     
     const char = event.key.toLowerCase();
     
@@ -424,8 +423,6 @@ async function loadAuthenticatedContent(username, password) {
     }
 }
 
-// Update hint text periodically
-// TODO: Add easier hints
 function updateHintPeriodically() {
     const hints = [
         "Try type something. Anything...",
@@ -446,7 +443,7 @@ function updateHintPeriodically() {
     let currentHint = 0;
     
     setInterval(() => {
-        if (hint && forbiddenPage.style.display !== 'none') {
+        if (hint && !document.body.innerHTML.includes('SECTOR-65 UNLOCKED')) {
             hint.innerHTML = `<small>${hints[currentHint]}</small>`;
             currentHint = (currentHint + 1) % hints.length;
         }
