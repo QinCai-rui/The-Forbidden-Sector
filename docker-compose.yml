@@ -1,6 +1,7 @@
 services:
   redis:
     image: redis:7.2-alpine
+    # Uncomment the following lines to expose Redis port for debugging
     #ports:
     #  - "6379:6379"
     volumes:
