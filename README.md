@@ -76,10 +76,9 @@ The server will start on `http://localhost:9082`
 ## API Endpoints
 
 - `GET /` - Main index page
-- `GET /info.html` - Information page with challenges
+- `GET /info.html` - Information page with challenges (redirects to `/` if no session)
 - `POST /authenticate` - Authentication endpoint
 - `POST /create_session` - Create challenge tracking session
-- `GET /content/authenticated` - Protected content (requires session_id)
 - `GET /content/help` - Help content with challenges
 - `POST /check_answer` - Challenge answer verification
 - `GET /style.css` - CSS stylesheet
