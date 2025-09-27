@@ -4,14 +4,12 @@ A mysterious web server for Scene 65: The Forbidden Sector.
 
 ## Features
 
-- **Auto-reload functionality** using uvicorn for development
-- **FastAPI-based server** for modern API endpoints
-- **Redis-based session management** to prevent memory leaks
-- **Docker containerisation** with Redis for easy deployment
-- **Interactive challenges** and authentication system
-- **Dynamic file serving** for HTML, CSS, and JavaScript
-- **Robust error handling** and logging
-- **Session expiration** (24 hours) for security
+- Auto-reload (uvicorn) for development
+- FastAPI server
+- Redis-backed sessions with in-memory fallback
+- Docker Compose stack for app + Redis
+- Interactive client-side challenges and auth
+- Static + dynamic content serving (HTML/CSS/JS)
 
 ## Running the Server
 
@@ -24,6 +22,7 @@ docker compose up --build -d
 ```
 
 This starts:
+
 - Redis server for session storage
 - FastAPI application server
 - Automatic volume mounting for development
@@ -63,12 +62,14 @@ The server will start on `http://localhost:9082`
 ## Session Management
 
 ### Redis Backend (Prod)
+
 - **Persistent storage**: Sessions survive application restarts
 - **Memory efficient**: No memory leaks from session accumulation
 - **Automatic expiration**: 24-hour TTL prevents stale sessions
 - **Scalable**: Multiple application instances can share session data
 
 ### In-Memory Fallback
+
 - **Automatic fallback**: Used when Redis is unavailable
 - **Development mode**: Suitable for local testing
 - **Warning logged**: Clear indication when fallback is active
@@ -76,19 +77,16 @@ The server will start on `http://localhost:9082`
 ## API Endpoints
 
 - `GET /` - Main index page
-- `GET /info.html` - Information page with challenges
-- `POST /authenticate` - Authentication endpoint
-- `POST /create_session` - Create challenge tracking session
-- `GET /content/authenticated` - Protected content (requires session_id)
-- `GET /content/help` - Help content with challenges
-- `POST /check_answer` - Challenge answer verification
-- `GET /style.css` - CSS stylesheet
-- `GET /script.js` - JavaScript file
+- `GET /info.html` - (redirects to `/` by design)
+- `GET /content/help` - Challenge HTML (loaded dynamically)
+- `POST /create_session` - returns `{ "session_id": "..." }`
+- `POST /check_answer` - submit answers
+- `POST /authenticate` - JSON username/password auth
+- `GET /style.css`, `GET /script.js` - static assets
 
 ## Redirect command (YAY YOU FOUND IT!!)
 
-The command that shows users the info page is:
-`help`
+Type **`help`** (keyboard sequence) on the landing page to load the interactive challenge UI. Direct `GET /info.html` is redirected to `/` intentionally.
 
 Want the username and password? It's here somewhere... hmm...
 
@@ -111,6 +109,7 @@ The server includes auto-reload functionality that watches for changes in:
 The Docker setup includes:
 
 ### Application Container
+
 - **Base**: Python 3.12 slim
 - **FastAPI and uvicorn** with auto-reload
 - **Redis client** for session management
@@ -118,7 +117,7 @@ The Docker setup includes:
 - **Volume mounting** for development
 
 ### Redis Container
+
 - **Base**: Redis 7.2 Alpine
 - **Persistent volume** for data storage
 - **Optimized configuration** with AOF persistence
-- **Port 6379** exposed for debugging
