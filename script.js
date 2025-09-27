@@ -437,7 +437,16 @@ function updateHintPeriodically() {
         "HkddndEhdhdhLhdeahP. Just kidding, or am I?",
         "Come on, it's not that hard...",
         "The answer is RIGHT in front of you...",
-        "The source is on GitHub, if you know where to look..."
+        "The source is on GitHub, if you know where to look...",
+        "In the shadows of the forbidden, light awaits...",
+        "The key lies in the letters you type...",
+        "Have you tried a common command?",
+        "Four letters might unlock the way...",
+        "It starts with H, what could it be?",
+        "Commands that help are often short...",
+        "The forbidden sector responds to certain words...",
+        "Perhaps typing 'help' would work...",
+        "Try pressing H, then E, then L, then P..."
     ];
     
     let currentHint = 0;
@@ -447,7 +456,7 @@ function updateHintPeriodically() {
             hint.innerHTML = `<small>${hints[currentHint]}</small>`;
             currentHint = (currentHint + 1) % hints.length;
         }
-    }, 4000);
+    }, 2000);
 }
 
 // Play unlock sound effect (simple beep using Web Audio API)
